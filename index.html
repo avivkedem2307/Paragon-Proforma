@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Paragon Pro Forma</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700&family=Hanken+Grotesk:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: navy masthead with deal name, net-profit hero, a "where the resale dollar goes" bar, then inputs left and itemized ledger right. */
+:root{
+  --bg:#eef1f6; --surface:#ffffff; --surface-2:#f3f5f9; --line:#dde2ec;
+  --ink:#0f1b33; --fg:#17233b; --muted:#5b6780;
+  --brand:#14264d; --brand-fg:#f4f7fd; --accent:#2f6df6;
+  --good:#12805c; --bad:#c23b2a; --warn:#8c5a00; --warn-bg:#fcf1d8;
+  --c-buy:#2b3a5c; --c-fin:#2f6df6; --c-close:#7b8cb3; --c-comm:#e08a2e; --c-carry:#c9a9e8; --c-reno:#d4584a; --c-net:#16a37a;
+  --disp:'Bricolage Grotesque',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --sans:'Hanken Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'DM Mono',ui-monospace,'SF Mono',Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0a1020; --surface:#111a30; --surface-2:#18233d; --line:#25314f;
+  --ink:#f1f5ff; --fg:#e3e9f7; --muted:#8f9cba;
+  --brand:#0d1936; --brand-fg:#f4f7fd; --accent:#6c9bff;
+  --good:#4fd6a6; --bad:#ff8b78; --warn:#ecbb55; --warn-bg:#2b2410;
+  --c-buy:#4b5f8f; --c-fin:#5b8dff; --c-close:#8d9cc4; --c-comm:#f0a04b; --c-carry:#b793dc; --c-reno:#ff7f70; --c-net:#3ed3a0; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0a1020; --surface:#111a30; --surface-2:#18233d; --line:#25314f;
+  --ink:#f1f5ff; --fg:#e3e9f7; --muted:#8f9cba;
+  --brand:#0d1936; --brand-fg:#f4f7fd; --accent:#6c9bff;
+  --good:#4fd6a6; --bad:#ff8b78; --warn:#ecbb55; --warn-bg:#2b2410;
+  --c-buy:#4b5f8f; --c-fin:#5b8dff; --c-close:#8d9cc4; --c-comm:#f0a04b; --c-carry:#b793dc; --c-reno:#ff7f70; --c-net:#3ed3a0; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.45}
+.band{background:var(--brand);color:var(--brand-fg);padding-block:18px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.inner{max-width:1100px;margin:0 auto}
+.mast{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}
+.mark{width:38px;height:38px;border-radius:9px;background:var(--accent);color:#fff;display:grid;place-items:center;font-family:var(--disp);font-weight:700;font-size:20px}
+.brand h1{margin:0;font-family:var(--disp);font-weight:600;font-size:21px;letter-spacing:-.01em}
+.brand small{display:block;font-size:12.5px;opacity:.7;margin-top:1px}
+.deal{display:flex;flex-direction:column;gap:3px;min-width:min(100%,280px);flex:0 1 380px}
+.deal label{color:inherit;opacity:.65;font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin:0}
+.deal input{font:inherit;font-size:15px;padding:9px 11px;border-radius:7px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.08);color:var(--brand-fg);width:100%}
+.deal input::placeholder{color:rgba(244,247,253,.45)}
+main{max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:18px;padding-block:20px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.tag{align-self:flex-start;font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;background:var(--warn-bg);color:var(--warn);padding:5px 9px;border-radius:5px}
+.hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr);gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 20px;min-width:0}
+.card .k{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.card .v{font-family:var(--disp);font-weight:600;font-size:30px;letter-spacing:-.02em;margin-top:6px;color:var(--ink);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.card .s{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-top:4px}
+.card.net{background:var(--brand);border-color:var(--brand);color:var(--brand-fg)}
+.card.net .k,.card.net .s{color:var(--brand-fg);opacity:.72}
+.card.net .v{color:var(--brand-fg);font-size:44px}
+.card.net .v.neg{color:#ffb4a6}
+.flow h2,.panel h2{margin:0 0 12px;font-family:var(--disp);font-weight:600;font-size:16px;color:var(--ink);letter-spacing:-.005em}
+.flow .head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.flow .head h2{margin:0}
+.flow .head span{font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+.bar{display:flex;height:34px;border-radius:8px;overflow:hidden;background:var(--surface-2);gap:2px}
+.bar i{display:block;height:100%;min-width:0;transition:flex-basis .25s}
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px 18px;margin-top:14px;font-size:13px}
+.legend div{display:flex;align-items:center;gap:8px;min-width:0}
+.legend b{width:10px;height:10px;border-radius:3px;flex:none}
+.legend span{color:var(--muted)}
+.legend em{font-style:normal;margin-left:auto;font-family:var(--mono);font-size:12.5px;color:var(--fg);font-variant-numeric:tabular-nums;white-space:nowrap}
+.cols{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:18px;align-items:start}
+.stack{display:flex;flex-direction:column;gap:18px;min-width:0}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 20px;min-width:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:14px}
+label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:5px;font-weight:500}
+.irow{display:grid;grid-template-columns:minmax(0,1fr) minmax(80px,120px) 36px;gap:8px;margin-top:8px}
+.irow button{padding:0;font-size:18px;line-height:1}
+details.reno{margin-top:14px;border-top:1px dashed var(--line);padding-top:12px}
+details.reno summary{cursor:pointer;font-size:13.5px;font-weight:600;color:var(--ink)}
+input[readonly]{opacity:.7}
+input[type=number],.irow input[type=text]{width:100%;font-family:var(--mono);font-size:14.5px;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2);color:var(--ink)}
+input:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.hint{font-size:12.5px;color:var(--muted);margin-top:8px}
+.toggle{display:flex;align-items:center;gap:10px;font-size:14.5px;color:var(--ink);margin:16px 0 0;cursor:pointer;font-weight:500}
+.toggle input{width:18px;height:18px;accent-color:var(--accent)}
+.row{display:flex;justify-content:space-between;gap:12px;padding:7px 0;font-size:14px;border-bottom:1px dashed var(--line)}
+.row span:last-child{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.row.sec{border:0;padding:16px 0 2px;color:var(--muted);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+.row.dim{color:var(--muted)}
+.row.big{font-weight:600;color:var(--ink);border-bottom:0;border-top:2px solid var(--ink);margin-top:8px;padding-top:11px}
+.flags{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px;font-size:13.5px}
+.flags li{padding-left:16px;position:relative}
+.flags li::before{content:"";position:absolute;left:0;top:.5em;width:7px;height:7px;border-radius:2px;background:var(--c-comm)}
+.flags b{color:var(--ink);font-weight:600}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+button{font:inherit;font-weight:500;font-size:14px;padding:9px 14px;border-radius:8px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);cursor:pointer}
+button.p{background:var(--accent);color:#fff;border-color:var(--accent)}
+.msg{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:8px;min-height:1.3em;overflow-wrap:anywhere}
+footer{font-size:12.5px;color:var(--muted)}
+@media (max-width:860px){.hero{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.card.net{grid-column:1/-1}.cols{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:480px){.hero{grid-template-columns:minmax(0,1fr)}.card.net .v{font-size:38px}}
+</style>
+
+</head>
+<body>
+<div class="band"><div class="inner mast">
+  <div class="brand"><div class="mark" aria-hidden="true">P</div><div><h1>Paragon Pro Forma</h1><small>Purchase to resale, cost and net</small></div></div>
+  <div class="deal"><label for="dealname">Deal / property</label><input id="dealname" type="text" placeholder="e.g. 123 Main St, Waco" autocomplete="off"></div>
+</div></div>
+
+<main>
+  <span class="tag" id="exTag">Example numbers, replace with the deal</span>
+
+  <section class="hero" aria-label="Headline figures">
+    <div class="card net"><div class="k">Estimated net profit</div><div class="v" id="mNet">-</div><div class="s" id="sNet"></div></div>
+    <div class="card"><div class="k">Total closing &amp; transaction cost</div><div class="v" id="mTotal">-</div><div class="s" id="sTotal"></div></div>
+    <div class="card"><div class="k">Cash in the deal</div><div class="v" id="mCash">-</div><div class="s" id="sCash"></div></div>
+  </section>
+
+  <section class="panel flow" aria-label="Where the resale dollar goes">
+    <div class="head"><h2>Where the resale dollar goes</h2><span id="flowNote"></span></div>
+    <div class="bar" id="bar" role="img" aria-label="Breakdown of resale price"></div>
+    <div class="legend" id="legend"></div>
+  </section>
+
+  <div class="cols">
+    <div class="stack">
+      <section class="panel">
+        <h2>Deal</h2>
+        <div class="grid">
+          <div><label for="purchase">Purchase price ($)</label><input type="number" id="purchase" step="1000" inputmode="decimal"></div>
+          <div><label for="sale">Resale price / ARV ($)</label><input type="number" id="sale" step="1000" inputmode="decimal"></div>
+          <div><label for="sqft">Sqft (optional)</label><input type="number" id="sqft" step="10" inputmode="decimal"></div>
+          <div><label for="psf">Resale $/sqft (optional)</label><input type="number" id="psf" step="0.5" inputmode="decimal"></div>
+          <div><label for="reno">Renovation cost ($)</label><input type="number" id="reno" step="500" inputmode="decimal"></div>
+          <div><label for="months">Hold (months)</label><input type="number" id="months" step="0.5" inputmode="decimal"></div>
+          <div><label for="comm">Commission (%)</label><input type="number" id="comm" step="0.5" inputmode="decimal"></div>
+        </div>
+        <div class="hint" id="psfHint"></div>
+        <details class="reno" id="renoDetails">
+          <summary>Itemize renovation (optional)</summary>
+          <div class="hint">Add line items and the renovation cost becomes their total.</div>
+          <div id="renoRows"></div>
+          <div class="actions" style="margin-top:10px"><button type="button" id="addItem">Add line item</button></div>
+          <div class="grid" style="margin-top:12px"><div><label for="contingency">Contingency (%)</label><input type="number" id="contingency" step="1" inputmode="decimal"></div></div>
+        </details>
+      </section>
+
+      <section class="panel">
+        <h2>Financing (Boomerang defaults)</h2>
+        <div class="grid">
+          <div><label for="ltv">Loan-to-value (%)</label><input type="number" id="ltv" step="1" inputmode="decimal"></div>
+          <div><label for="pts">Origination (pts)</label><input type="number" id="pts" step="0.25" inputmode="decimal"></div>
+          <div><label for="rate">Interest (% / yr)</label><input type="number" id="rate" step="0.5" inputmode="decimal"></div>
+          <div><label for="docprep">Doc prep ($)</label><input type="number" id="docprep" step="50" inputmode="decimal"></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Closing &amp; carry</h2>
+        <div class="grid">
+          <div><label for="buyclose">Buy-side closing ($)</label><input type="number" id="buyclose" step="100" inputmode="decimal"></div>
+          <div><label for="sellclose">Sale-side closing ($)</label><input type="number" id="sellclose" step="100" inputmode="decimal"></div>
+          <div><label for="ins">Insurance ($ / yr)</label><input type="number" id="ins" step="100" inputmode="decimal"></div>
+          <div><label for="taxyr">Property tax ($ / yr)</label><input type="number" id="taxyr" step="100" inputmode="decimal"></div>
+        </div>
+        <div class="hint">Use the un-exempted tax if the seller's homestead exemption falls off at purchase.</div>
+        <label class="toggle"><input type="checkbox" id="hasHoa"> Property is in an HOA</label>
+        <div class="grid" id="hoaFields" style="margin-top:14px" hidden>
+          <div><label for="hoa">HOA dues ($ / yr)</label><input type="number" id="hoa" step="50" inputmode="decimal"></div>
+          <div><label for="cef">Enhancement fee ($)</label><input type="number" id="cef" step="10" inputmode="decimal"></div>
+        </div>
+        <div class="hint" id="cefHint" hidden>The fee fills in as the greater of $100 or 0.15% of resale. Type a number to override it.</div>
+      </section>
+    </div>
+
+    <div class="stack">
+      <section class="panel"><h2>Itemized</h2><div id="lines"></div></section>
+      <section class="panel"><h2>Watch list</h2><ul class="flags" id="flags"></ul></section>
+      <section class="panel">
+        <h2>Share this deal</h2>
+        <div class="actions">
+          <button class="p" id="copy" type="button">Copy summary</button>
+          <button id="reset" type="button">Reset to example</button>
+        </div>
+        <div class="msg" id="copyMsg"></div>
+      </section>
+    </div>
+  </div>
+
+  <footer>Title and financing figures are estimates until the Avant net sheet and Boomerang term sheet arrive. Legal questions go to Jacob.</footer>
+</main>
+
+<script>
+(function(){
+  var DEF={dealname:'',purchase:150000,sale:240000,sqft:1800,psf:'',reno:0,contingency:0,months:1,comm:5,ltv:80,pts:1,rate:12,docprep:995,
+           buyclose:3200,sellclose:2700,ins:2000,taxyr:4800,hasHoa:false,hoa:0,cef:''};
+  var NUM=['purchase','sale','sqft','psf','reno','contingency','months','comm','ltv','pts','rate','docprep','buyclose','sellclose','ins','taxyr','hoa','cef'];
+  var KEY='paragon-proforma-v2', cefDirty=false, example=true;
+  function $(id){return document.getElementById(id);}
+  function n(id){var x=parseFloat($(id).value);return isFinite(x)?x:0;}
+  function usd(x){x=Math.round(x);return (x<0?'-':'')+'$'+Math.abs(x).toLocaleString('en-US');}
+  function pct(x){return (Math.round(x*10)/10)+'%';}
+  var items=[];
+  function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+  function renderRows(){$('renoRows').innerHTML=items.map(function(r,i){
+    return '<div class="irow"><input type="text" id="ri-n-'+i+'" data-i="'+i+'" data-f="n" value="'+esc(r.n)+'" placeholder="e.g. Flooring" aria-label="Item name">'+
+      '<input type="number" id="ri-a-'+i+'" data-i="'+i+'" data-f="a" value="'+esc(r.a)+'" placeholder="$" inputmode="decimal" aria-label="Item amount">'+
+      '<button type="button" data-rm="'+i+'" aria-label="Remove item">&times;</button></div>';}).join('');}
+  function save(){try{var o={renoItems:items,example:example,cefDirty:cefDirty,hasHoa:$('hasHoa').checked,dealname:$('dealname').value};NUM.forEach(function(i){o[i]=$(i).value;});localStorage.setItem(KEY,JSON.stringify(o));}catch(e){}}
+  function load(){try{return JSON.parse(localStorage.getItem(KEY)||'null');}catch(e){return null;}}
+  function fill(o){items=Array.isArray(o.renoItems)?o.renoItems:[];renderRows();if(items.length)$('renoDetails').open=true;NUM.forEach(function(i){$(i).value=(o[i]===undefined||o[i]===null)?'':o[i];});$('hasHoa').checked=!!o.hasHoa;$('dealname').value=o.dealname||'';}
+  function row(l,v,c){return '<div class="row '+(c||'')+'"><span>'+l+'</span><span>'+v+'</span></div>';}
+
+  function calc(src){
+    var sqft=n('sqft');
+    if(src==='psf'&&sqft>0&&$('psf').value!=='') $('sale').value=Math.round(n('psf')*sqft);
+    if((src==='sale'||src==='sqft')&&sqft>0&&n('sale')>0) $('psf').value=(Math.round(n('sale')/sqft*100)/100);
+    var hasHoa=$('hasHoa').checked;
+    $('hoaFields').hidden=!hasHoa; $('cefHint').hidden=!hasHoa;
+    var sale=n('sale'),purchase=n('purchase'),months=n('months'),comm=n('comm');
+    if(hasHoa&&!cefDirty) $('cef').value=sale>0?Math.round(Math.max(100,0.0015*sale)*100)/100:'';
+    var ltv=n('ltv'),pts=n('pts'),rate=n('rate'),docprep=n('docprep'),buyclose=n('buyclose'),sellclose=n('sellclose'),
+        ins=n('ins'),taxyr=n('taxyr'),hoa=hasHoa?n('hoa'):0,cef=hasHoa?n('cef'):0;
+    var loan=purchase*ltv/100, down=purchase-loan, orig=loan*pts/100, interest=loan*(rate/100/12)*months;
+    var hard=orig+docprep+interest, insP=ins/12*months, hoaP=hoa/12*months, taxP=taxyr/12*months, commission=sale*comm/100;
+    var carry=insP+hoaP+cef+taxP, closing=buyclose+sellclose;
+    var itemSum=items.reduce(function(a,r){return a+(parseFloat(r.a)||0);},0);
+    var itemized=items.length>0&&itemSum>0;
+    $('reno').readOnly=itemized; if(itemized) $('reno').value=itemSum;
+    var cont=n('contingency'), reno=n('reno')*(1+cont/100);
+    var total=hard+closing+commission+carry+reno;
+    var net=sale-purchase-total;
+    var cash=down+orig+docprep+buyclose+interest+insP+hoaP+cef+taxP+reno;
+
+    var mn=$('mNet'); mn.textContent=usd(net); mn.classList.toggle('neg',net<0);
+    $('sNet').textContent=(sale>0?pct(net/sale*100)+' of resale':'')+(cash>0?' · '+pct(net/cash*100)+' on cash':'');
+    $('mTotal').textContent=usd(total);
+    $('sTotal').textContent=sale>0?pct(total/sale*100)+' of resale':'';
+    $('mCash').textContent=usd(cash);
+    $('sCash').textContent='down '+usd(down)+(reno>0?' + reno':'')+' + costs';
+
+    // resale dollar bar
+    var segs=[['Purchase price',purchase,'--c-buy'],['Renovation',reno,'--c-reno'],['Financing',hard,'--c-fin'],['Title & closing',closing,'--c-close'],
+              ['Commission',commission,'--c-comm'],['Carry (tax, insurance, HOA)',carry,'--c-carry'],['Net profit',Math.max(net,0),'--c-net']];
+    var sum=segs.reduce(function(a,s){return a+s[1];},0)||1;
+    $('bar').innerHTML=segs.map(function(s){return s[1]>0?'<i style="flex:'+(s[1]/sum)+' 1 0;background:var('+s[2]+')" title="'+s[0]+'"></i>':'';}).join('');
+    $('legend').innerHTML=segs.map(function(s){return '<div><b style="background:var('+s[2]+')"></b><span>'+s[0]+'</span><em>'+usd(s[1])+'</em></div>';}).join('');
+    $('flowNote').textContent=net<0?'Costs exceed resale by '+usd(-net):(sale>0?'Resale '+usd(sale):'');
+
+    var h='';
+    h+=row('Resale price',usd(sale),'big').replace('big','').replace('border-top:2px','');
+    h+=row('Purchase price','-'+usd(purchase));
+    h+=row('Renovation'+(cont>0?' (+'+cont+'% contingency)':''),'-'+usd(reno));
+    h+=row('Hard money','','sec');
+    h+=row('Loan ('+ltv+'% LTV)',usd(loan),'dim');
+    h+=row('Down payment',usd(down),'dim');
+    h+=row('Origination ('+pts+' pt)','-'+usd(orig));
+    h+=row('Doc prep','-'+usd(docprep));
+    h+=row('Interest ('+months+' mo @ '+rate+'%)','-'+usd(interest));
+    h+=row('Closing, sale &amp; carry','','sec');
+    h+=row('Buy-side closing','-'+usd(buyclose));
+    h+=row('Sale-side closing','-'+usd(sellclose));
+    h+=row('Commission ('+comm+'%)','-'+usd(commission));
+    if(hasHoa){h+=row('HOA dues ('+months+' mo)','-'+usd(hoaP));h+=row('Community enhancement fee','-'+usd(cef));}
+    h+=row('Insurance ('+months+' mo, prorated)','-'+usd(insP));
+    h+=row('Property tax ('+months+' mo)','-'+usd(taxP));
+    h+=row('Total closing &amp; transaction cost','-'+usd(total),'big');
+    h+=row('Estimated net profit',usd(net),'big');
+    $('lines').innerHTML=h;
+
+    var hint=$('psfHint'); hint.textContent='';
+    if(sqft>0&&sale>0) hint.textContent='Implied resale: '+usd(sale)+' = $'+(Math.round(sale/sqft*100)/100)+'/sqft on '+sqft.toLocaleString('en-US')+' sqft';
+
+    var f=[];
+    if(net<0) f.push('<b>Negative net.</b> At these numbers the deal loses '+usd(-net)+'.');
+    if(reno>0&&months<2) f.push('<b>Hold vs. renovation.</b> '+usd(reno)+' of work in '+months+' mo is tight. Check the hold period.');
+    if(hasHoa) f.push('<b>HOA lien or delinquency.</b> Dues and any lien clear from seller proceeds. Request the resale certificate.');
+    f.push('<b>Tax proration.</b> Confirm the title company prorates on the un-exempted value, not the seller\'s homestead figure.');
+    f.push('<b>Old or securitized mortgage payoff.</b> Releases can be slow. Order the payoff early if one appears.');
+    f.push('<b>Estimates.</b> Closing and financing lines are placeholders until the net sheet and term sheet land.');
+    f.push('<b>Easements and survey.</b> Check for pipeline or other easements crossing the lot.');
+    $('flags').innerHTML=f.map(function(x){return '<li>'+x+'</li>';}).join('');
+
+    var name=$('dealname').value.trim();
+    window.__sum='Paragon pro forma'+(name?' - '+name:'')+'\nPurchase '+usd(purchase)+' | Reno '+usd(reno)+' | Resale '+usd(sale)+' | Hold '+months+' mo\n'+
+      'Total closing & transaction cost: '+usd(total)+'\nEstimated net profit: '+usd(net)+'\nCash in the deal: '+usd(cash);
+    if(src){example=false;$('exTag').hidden=true;save();}
+  }
+
+  var saved=load(); if(saved){example=!!saved.example;cefDirty=!!saved.cefDirty;fill(saved);} else fill(DEF);
+  $('exTag').hidden=!example;
+  NUM.forEach(function(i){$(i).addEventListener('input',function(){if(i==='cef')cefDirty=$('cef').value!=='';calc(i);});});
+  $('renoRows').addEventListener('input',function(e){var t=e.target,i=t.getAttribute('data-i');if(i===null)return;items[+i][t.getAttribute('data-f')]=t.value;calc('reno');});
+  $('renoRows').addEventListener('click',function(e){var b=e.target.closest('[data-rm]');if(!b)return;items.splice(+b.getAttribute('data-rm'),1);renderRows();calc('reno');});
+  $('addItem').addEventListener('click',function(){items.push({n:'',a:''});renderRows();var f=$('ri-n-'+(items.length-1));if(f)f.focus();});
+  $('dealname').addEventListener('input',function(){calc('dealname');});
+  $('hasHoa').addEventListener('change',function(){calc('hasHoa');});
+  $('reset').addEventListener('click',function(){cefDirty=false;example=true;fill(DEF);$('exTag').hidden=false;calc();try{localStorage.removeItem(KEY);}catch(e){}$('copyMsg').textContent='';});
+  $('copy').addEventListener('click',function(){
+    var m=$('copyMsg');
+    function fallback(){m.textContent=window.__sum.replace(/\n/g,' | ');}
+    try{navigator.clipboard.writeText(window.__sum).then(function(){m.textContent='Copied.';},fallback);}catch(e){fallback();}
+  });
+  calc();
+})();
+</script>
+</body>
+</html>
